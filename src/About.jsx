@@ -13,7 +13,7 @@ class Profile extends Component {
 
         <h2>Immanuel Shin</h2>
         <p>Hi, I'm Immanuel Shin</p>
-        <a href="https://github.com/ImmanuelShin">My Github</a>
+        <a href="https://github.com/ImmanuelShin" >My Github</a>
       </>
       
     ) 
