@@ -112,7 +112,7 @@ function BestBooks() {
                       'Remove'
                     )}
                   </Button>
-                  <Button onClick={() => handleEdit(book)}>Update</Button>
+                  <Button variant="secondary" onClick={() => handleEdit(book)}>Update</Button>
                   {editShow && <EditFormModal
                     show={editShow}
                     setShow={setEditShow}
