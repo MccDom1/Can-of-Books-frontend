@@ -10,7 +10,6 @@ export default function BookFormModal(props) {
     const handleClose = () => props.setShow(false);
 
    async function addBook(Book){
-    console.log(Book)
     const options = {
         method: 'POST',
         headers: {
@@ -35,7 +34,9 @@ export default function BookFormModal(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <BookForm 
-                    addBook={addBook}/>
+                    addBook={addBook}
+                    handleClose={handleClose}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     
