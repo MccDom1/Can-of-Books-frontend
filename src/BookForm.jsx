@@ -4,8 +4,6 @@ import Form from 'react-bootstrap/Form';
 import React, { useState } from 'react';
 
 export default function BookForm(props) {
-
-    const [formData, setFormData] = useState({});
     function handleSubmit(event) {
         event.preventDefault();
         const {
@@ -15,17 +13,15 @@ export default function BookForm(props) {
         } = event.target.elements;
         console.log(BookFormTitle.value, BookFormDescription.value, status.value);
 
-        const title = BookFormTitle.value
-        const description = BookFormDescription.value
-        const statuss = status.value
+        const title = String(BookFormTitle.value);
+        const description = String(BookFormDescription.value);
+        const statuss = String(status.value);
 
-        setFormData({
-            title: { title },
-            description: { description},
-            status: { statuss}
-        });
-        console.log(formData);
-        props.addBook(formData)
+        props.addBook({
+            title,
+            description,
+            status: statuss
+        })
     }
     return (
         <Form onSubmit={handleSubmit}>
