@@ -6,14 +6,19 @@ import Button from 'react-bootstrap/Button';
 import BookFormModal from './BookFormModal';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
+import EditFormModal from './EditFormModal';
 
 /* TODO: Create a component called `BestBooks` that renders a Carousel of all the books in your database */
 function BestBooks() {
 
   const [books, setBooks] = useState([]);
   const [show, setShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
+  const [editBook, setEditBook] = useState(null);
   const [error, setError] = useState(null);
   const [loadingBooks, setLoadingBooks] = useState(true);
+  const [, setForceRerender] = useState({});
+  const [activeIndex, setActiveIndex] = useState(0);
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   async function getBooks() {
@@ -21,6 +26,7 @@ function BestBooks() {
       const response = await axios.get('https://can-of-books-api-nr7r.onrender.com/books');
       setBooks(response.data);
       setLoadingBooks(false);
+      setForceRerender({}); 
     } catch (error) {
       console.log(error);
       setError('Failed to fetch books.');
@@ -30,6 +36,10 @@ function BestBooks() {
   }
   async function handleRemove(id) {
     try {
+      const indexToRemove = books.findIndex((book) => book._id === id);
+      const nextIndex = Math.min(indexToRemove, books.length - 2);
+      setActiveIndex(nextIndex);
+
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
           book._id === id ? { ...book, loading: true } : book
@@ -49,9 +59,14 @@ function BestBooks() {
     }
   }
 
+  function handleEdit(book) {
+    setEditBook(book);
+    setEditShow(true);
+  }
+
   useEffect(() => {
     getBooks();
-  }, []);
+  }, [books]);
 
   /* TODO: render all the books in a Carousel */
 
@@ -72,7 +87,10 @@ function BestBooks() {
         <>
           {error && <Alert variant="danger">{error}</Alert>}
           {books.length ? (
-            <Carousel interval={5000}>
+            <Carousel 
+            activeIndex={activeIndex}
+            onSelect={(index) => setActiveIndex(index)}
+            >
               {books.map((book) => (
                 <Carousel.Item className="carousel-item-book" key={book._id}>
                   <h3>{book.title}</h3>
@@ -82,7 +100,6 @@ function BestBooks() {
                     disabled={book.loading}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log(book._id);
                       handleRemove(book._id);
                     }}
                   >
@@ -95,6 +112,13 @@ function BestBooks() {
                       'Remove'
                     )}
                   </Button>
+                  <Button onClick={() => handleEdit(book)}>Update</Button>
+                  {editShow && <EditFormModal
+                    show={editShow}
+                    setShow={setEditShow}
+                    book={editBook}
+                    setBooks={setBooks}
+                  />}
                 </Carousel.Item>
               ))}
             </Carousel>
