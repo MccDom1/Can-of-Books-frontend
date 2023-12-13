@@ -1,0 +1,9 @@
+.carousel-item-book.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.carousel-indicators {
+    display: none;
+}

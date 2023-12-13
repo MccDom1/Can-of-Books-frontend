@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import BookFormModal from './BookFormModal';
+
 /* TODO: Create a component called `BestBooks` that renders a Carousel of all the books in your database */
 function BestBooks() {
 
@@ -21,6 +22,17 @@ function BestBooks() {
     }
 
   }
+  async function handleRemove(id) {
+    console.log(id);
+    try {
+      await axios.delete(`https://can-of-books-api-nr7r.onrender.com/books/${id}`);
+      const updatedBooks = books.filter((book) => book._id !== id);
+      setBooks(updatedBooks);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getBooks();
   }, []);
@@ -39,7 +51,7 @@ function BestBooks() {
       {books.length ? (
         <Carousel>
           {books.map((book) => (
-            <Carousel.Item key={book._id}>
+            <Carousel.Item className="carousel-item-book" key={book._id}>
               {/* <img
                 className="d-block w-100"
                 src={book.cover}
@@ -49,6 +61,11 @@ function BestBooks() {
               <h3>{book.title}</h3>
               <p>{book.description}</p>
               <p>{book.status}</p>
+              <Button onClick={(e) => {
+                e.stopPropagation();
+                console.log(book._id);
+                handleRemove(book._id)
+              }}>remove</Button>
             </Carousel.Item>
           ))}
         </Carousel>
