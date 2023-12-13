@@ -11,7 +11,6 @@ export default function BookForm(props) {
             BookFormDescription,
             status
         } = event.target.elements;
-        console.log(BookFormTitle.value, BookFormDescription.value, status.value);
 
         const title = String(BookFormTitle.value);
         const description = String(BookFormDescription.value);
@@ -24,7 +23,10 @@ export default function BookForm(props) {
         })
     }
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={(e) => {
+            handleSubmit(e);
+            props.handleClose();
+        }}>
             <Form.Group className="mb-3" controlId="BookFormTitle">
                 <Form.Label>Title</Form.Label>
                 <Form.Control type="text" placeholder="Enter title" />

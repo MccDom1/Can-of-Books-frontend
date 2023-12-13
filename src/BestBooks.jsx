@@ -23,7 +23,6 @@ function BestBooks() {
 
   }
   async function handleRemove(id) {
-    console.log(id);
     try {
       await axios.delete(`https://can-of-books-api-nr7r.onrender.com/books/${id}`);
       const updatedBooks = books.filter((book) => book._id !== id);
