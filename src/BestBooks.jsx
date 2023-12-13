@@ -13,15 +13,18 @@ function BestBooks() {
   const [books, setBooks] = useState([]);
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingBooks, setLoadingBooks] = useState(true);
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   async function getBooks() {
     try {
       const response = await axios.get('https://can-of-books-api-nr7r.onrender.com/books');
       setBooks(response.data);
+      setLoadingBooks(false);
     } catch (error) {
       console.log(error);
       setError('Failed to fetch books.');
+      setLoadingBooks(false);
     }
 
   }
@@ -61,40 +64,44 @@ function BestBooks() {
         setShow={setShow}
         setBooks={setBooks}
       />}
-      {error && <Alert variant="danger">{error}</Alert>}
-      {books.length ? (
-        <Carousel>
-          {books.map((book) => (
-            <Carousel.Item className="carousel-item-book" key={book._id}>
-              {/* <img
-                className="d-block w-100"
-                src={book.cover}
-                alt="Book Cover"
-              /> */}
-
-              <h3>{book.title}</h3>
-              <p>{book.description}</p>
-              <p>{book.status}</p>
-              <Button
-                disabled={book.loading}
-                onClick={() => {
-                  handleRemove(book._id)
-                }}
-              >
-                {book.loading ? (
-                  <>
-                    <Spinner animation='border' size='sm' className='best-spin' />
-                    Removing...
-                  </>
-                ) : (
-                  'Remove'
-                )}
-              </Button>
-            </Carousel.Item>
-          ))}
-        </Carousel>
+      {loadingBooks ? (
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Retrieving books...</span>
+        </Spinner>
       ) : (
-        <h3>No Books Found :(</h3>
+        <>
+          {error && <Alert variant="danger">{error}</Alert>}
+          {books.length ? (
+            <Carousel interval={5000}>
+              {books.map((book) => (
+                <Carousel.Item className="carousel-item-book" key={book._id}>
+                  <h3>{book.title}</h3>
+                  <p>{book.description}</p>
+                  <p>{book.status}</p>
+                  <Button
+                    disabled={book.loading}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log(book._id);
+                      handleRemove(book._id);
+                    }}
+                  >
+                    {book.loading ? (
+                      <>
+                        <Spinner animation="border" size="sm" className="me-2" />
+                        Removing...
+                      </>
+                    ) : (
+                      'Remove'
+                    )}
+                  </Button>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          ) : (
+            <h3>No Books Found :(</h3>
+          )}
+        </>
       )}
     </>
   )
