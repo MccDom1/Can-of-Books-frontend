@@ -1,47 +1,41 @@
 
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import BookForm from './BookForm';
 export default function BookFormModal(props) {
-    const [formData, setFormData] = useState({});
-    
-    const handleClose = () => props.setShow(false);
 
-   async function addBook(Book){
+  const handleClose = () => props.setShow(false);
+
+  async function addBook(Book) {
     const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: Book
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: Book
     };
     try {
-        const response = await axios.post('https://can-of-books-api-nr7r.onrender.com/books', options);
-        props.setBooks((prev) => [...prev, response.data]);
+      const response = await axios.post('https://can-of-books-api-nr7r.onrender.com/books', options);
+      props.setBooks((prev) => [...prev, response.data]);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-   }
+  }
 
-    return (
-        <>
+  return (
+    <>
 
-            <Modal show={props.show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add A New Book</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <BookForm 
-                    addBook={addBook}
-                    handleClose={handleClose}
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    
-                </Modal.Footer>
-            </Modal>
-        </>
-    );
+      <Modal show={props.show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add A New Book</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <BookForm
+            addBook={addBook}
+            handleClose={handleClose}
+          />
+        </Modal.Body>
+      </Modal>
+    </>
+  );
 }

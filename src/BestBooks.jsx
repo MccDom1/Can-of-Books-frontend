@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import BookFormModal from './BookFormModal';
+import Spinner from 'react-bootstrap/Spinner';
 
 /* TODO: Create a component called `BestBooks` that renders a Carousel of all the books in your database */
 function BestBooks() {
 
   const [books, setBooks] = useState([]);
-  const [newBook, setNewBook] = useState({});
   const [show, setShow] = useState(false);
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
@@ -24,11 +24,21 @@ function BestBooks() {
   }
   async function handleRemove(id) {
     try {
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === id ? { ...book, loading: true } : book
+        )
+      );
       await axios.delete(`https://can-of-books-api-nr7r.onrender.com/books/${id}`);
       const updatedBooks = books.filter((book) => book._id !== id);
       setBooks(updatedBooks);
     } catch (error) {
       console.log(error);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === id ? { ...book, loading: false } : book
+        )
+      );
     }
   }
 
@@ -60,11 +70,21 @@ function BestBooks() {
               <h3>{book.title}</h3>
               <p>{book.description}</p>
               <p>{book.status}</p>
-              <Button onClick={(e) => {
-                e.stopPropagation();
-                console.log(book._id);
-                handleRemove(book._id)
-              }}>remove</Button>
+              <Button
+                disabled={book.loading}
+                onClick={() => {
+                  handleRemove(book._id)
+                }}
+              >
+                {book.loading ? (
+                  <>
+                    <Spinner animation='border' size='sm' className='best-spin' />
+                    Removing...
+                  </>
+                ) : (
+                  'Remove'
+                )}
+              </Button>
             </Carousel.Item>
           ))}
         </Carousel>
