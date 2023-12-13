@@ -5,12 +5,14 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import BookFormModal from './BookFormModal';
 import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
 
 /* TODO: Create a component called `BestBooks` that renders a Carousel of all the books in your database */
 function BestBooks() {
 
   const [books, setBooks] = useState([]);
   const [show, setShow] = useState(false);
+  const [error, setError] = useState(null);
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   async function getBooks() {
@@ -19,6 +21,7 @@ function BestBooks() {
       setBooks(response.data);
     } catch (error) {
       console.log(error);
+      setError('Failed to fetch books.');
     }
 
   }
@@ -34,6 +37,7 @@ function BestBooks() {
       setBooks(updatedBooks);
     } catch (error) {
       console.log(error);
+      setError('Failed to remove the book.');
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
           book._id === id ? { ...book, loading: false } : book
@@ -57,6 +61,7 @@ function BestBooks() {
         setShow={setShow}
         setBooks={setBooks}
       />}
+      {error && <Alert variant="danger">{error}</Alert>}
       {books.length ? (
         <Carousel>
           {books.map((book) => (
