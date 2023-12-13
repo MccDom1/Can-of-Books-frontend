@@ -20,7 +20,7 @@ export default function BookFormModal(props) {
     };
     try {
         const response = await axios.post('https://can-of-books-api-nr7r.onrender.com/books', options);
-        props.setBook((prev) => [...prev, response.data]);
+        props.setBooks((prev) => [...prev, response.data]);
     } catch (error) {
         console.log(error);
     }
